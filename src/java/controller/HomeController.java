@@ -26,7 +26,7 @@ public class HomeController {
                 "  `usuarios`.email,\n" +
                 "  `usuarios`.edad,\n" +
                 "  `usuarios`.fechaNac,\n" +
-                "  `usuarios`.pais\n" +
+                "  `usuarios`.idPais\n" +
                 "FROM\n" +
                 "  `usuarios`\n" +
                 "ORDER BY\n" +

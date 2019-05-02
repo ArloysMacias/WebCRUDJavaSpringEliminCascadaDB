@@ -23,7 +23,7 @@
             <legend>Insert user</legend>
             <br>
             <!-- con el metodo post -->
-            <f:form class="form-horizontal" commandName="persona">  
+            <f:form class="form-horizontal" commandName="pais">  
                 <fieldset>                   
                     <f:errors path="nombre" element="div" cssClass="alert alert-danger"></f:errors>
                     <f:errors path="correo" element="div" cssClass="alert alert-danger"></f:errors>    
@@ -74,52 +74,6 @@
                                 <f:options items="${paisLista}"/>
                             </f:select>
                         </div>
-                        
-                        
-                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo">Add Country</button>
-                        
-                        
-                        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                            <div class="modal-dialog" role="document">
-                                <div class="modal-content">
-                                    <div class="row">
-                                        
-                                        <div class="col-md-6 ml-auto">
-                                            <div class="container-fluid">
-                                                <div class="modal-header">
-                                                    <h4 class="modal-title" id="exampleModalLabel">Add another country</h4>
-                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                        <span aria-hidden="true">&times;</span>
-                                                    </button>
-                                                </div>
-                                                <div class="modal-body"> 
-                                                    <form>
-                                                        <div class="form-group">
-                                                            <label> Name</label>
-                                                            <input type="text" class="form-control">
-                                                            <small class="form-text text-muted">Make sure that the country does not exist</small>
-                                                        </div>
-                                                    </form>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                                    <button type="button" class="btn btn-primary">Save</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6 ml-auto">
-                                            <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d52084671.18180194!2d40.265177402728376!3d35.571869140229495!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1ses!2sse!4v1556755086375!5m2!1ses!2sse" width="600" height="450" frameborder="0" style="border:0" allowfullscreen></iframe>
-                                        </div>
-                                        
-                                        
-                                    </div>
-                                    
-                                </div>
-                            </div>
-                        </div>
-                        
-                        
-                        
                     </div>
                     <!-- Button -->
                     <div class="form-group">
