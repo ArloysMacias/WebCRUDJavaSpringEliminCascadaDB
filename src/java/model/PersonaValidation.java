@@ -24,7 +24,6 @@ public class PersonaValidation implements Validator {
     @Override
     public void validate(Object o, Errors errors) {
         Persona p = (Persona) o;
-        
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "nombre",
                 "required.nombre", "The name must be entered");
         
@@ -32,7 +31,7 @@ public class PersonaValidation implements Validator {
                 "required.correo", "The e-mail must be entered");
         
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "fecha",
-                "required.nombre", "The date of birth must be entered");
+                "required.fecha", "The date of birth must be entered");
         
         String correo =""+p.getCorreo();
         if (!(p.getCorreo() != null && correo.isEmpty()))
@@ -42,7 +41,7 @@ public class PersonaValidation implements Validator {
             if (!matcher.matches()) {
                 errors.rejectValue("correo", "correo.incorrect",
                         "The e-mail:  "+p.getCorreo()+" is not valid");
-                System.out.println("El error fe en el correo :NO ES VALIDO: "+p.getCorreo());
+                System.out.println("El error fue en el correo :NO ES VALIDO: "+p.getCorreo());
             }else{
                 System.out.println("El correo matcha bien y no esta vacio: "+p.getCorreo());
             }
@@ -54,12 +53,27 @@ public class PersonaValidation implements Validator {
         
         if(p.getPais().equalsIgnoreCase("ninguno"))
         {
-            System.out.println("El error fe en el pais: "+p.getPais());
+            System.out.println("El error fue en el pais: "+p.getPais());
             errors.rejectValue("pais", "required.pais","Select a country");
         }else{
             System.out.println("No hay error en pais: "+p.getPais());
         }
         System.out.println("El error es  : "+errors.getAllErrors());
     }
+    
+    public void validatePais(Object o, Errors errors) {
+        Pais p=(Pais)o;
+    
+        if(p.getNombrePais().equalsIgnoreCase(""))
+        {
+            System.out.println("El error fue en el pais: "+p.getNombrePais());
+            errors.rejectValue("pais", "required.pais","Select a country");
+        }else{
+            System.out.println("No hay error en pais: "+p.getNombrePais());
+        }
+        System.out.println("El error es  : "+errors.getAllErrors());
+    }
+    
+    
     
 }

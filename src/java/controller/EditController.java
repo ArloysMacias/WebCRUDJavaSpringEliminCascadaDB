@@ -3,8 +3,10 @@ package controller;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
+import javax.xml.bind.ParseConversionEvent;
 import model.Conectar;
 import model.Persona;
 import model.PersonaValidation;
@@ -68,26 +70,33 @@ public class EditController
     @DateTimeFormat(pattern = "yyyy/MM/dd")
     public ModelAndView form
         (
-                @ModelAttribute("persona") Persona u,
+                @ModelAttribute("persona") Persona u,//Modelo que se valida (Con los datos del formulario cuando se presiona el boton editar) mas adelante
                 BindingResult result,
                 SessionStatus status,
                 HttpServletRequest request
         )
     {
-        this.usuariosValidar.validate(u, result);
+        this.usuariosValidar.validate(u, result);//Aqui se valida ese modelo "Persona u"
         if(result.hasErrors())
         {
+            //Si hay errores se siene que quedar en esa vista es decir mostrar la misma pagina
+            //y no salir de esa pagina hasta que se corrigan los errores
             ModelAndView mav=new ModelAndView();
             int id=Integer.parseInt(request.getParameter("id"));
             Persona datos=this.selectUsuario(id);
             mav.setViewName("edit");
+            //Aqui si el modelo esta ya bueno y con todos los datos valiod CREO EL NUEVO OBJETO PERSONA 
+            //Y CREO EL NUEVO MODELO CON ESA PERSONA NUEVA  ("persona")
+            //Tengo que poner "persona" como mismo esta en el modelo de arriva porque una vez que se corrigan
+            //los datos y se presione de nuevo el boton ya no volvera a pasar por aqui y se ira nuevamente a la linea 73
+            // @ModelAttribute("persona") Persona u    se llamara de nuevo a la funcion form con ese parametro y tiene que llamarse  "persona"
             mav.addObject("persona",new Persona(id,datos.getNombre(),datos.getCorreo(),datos.getPais(),datos.getEdad(),datos.getFecha()));
-            return mav;
+            return mav;//mostrar la misma pagina quedarse en esa pagina
         }else
         {
             int id=Integer.parseInt(request.getParameter("id"));
             String sql="update usuarios set nombre=?,email=?,edad=?,fechaNac=?,pais=? where id=?";
-        this.jdbcTemplate.update(sql,u.getNombre(),u.getCorreo(),u.getEdad(),u.getFecha(),u.getPais(),id);
+        this.jdbcTemplate.update(sql,u.getNombre(),u.getCorreo(),u.getEdad(),u.getFecha(),nombrePaisPorId(Integer.parseInt(u.getPais())),id);
          return new ModelAndView("redirect:/home.htm");
         }
        
@@ -109,6 +118,7 @@ public class EditController
                         user.setEdad(rs.getInt("edad"));
                         user.setFecha(rs.getString("fechaNac"));
                         user.setPais(rs.getString("pais"));
+                        
                     }
                     return user;
                 }
@@ -119,17 +129,29 @@ public class EditController
         
     }
 
-    //metodo para poblar el select
-    @ModelAttribute("paisLista")
+//    //metodo para poblar el select
+//    @ModelAttribute("paisListaPrueba")
+//    //pais.put(Valor que coje en la base Datos, Valor que muestra la pagina)
+//    public Map<String,String>listadoDePaisesPrueba(){
+//        Map<String,String>pais= new LinkedHashMap<>();
+//        pais.put("Cuba","Cuba");
+//        pais.put("México","México");
+//        pais.put("Colombia","Colombia");
+//        pais.put("España","España");
+//        pais.put("Suecia","Suecia");
+//        return pais;
+//    }
+//    
+        @ModelAttribute("paisLista")
     //pais.put(Valor que coje en la base Datos, Valor que muestra la pagina)
     public Map<String,String>listadoDePaises(){
-        Map<String,String>pais= new LinkedHashMap<>();
-        pais.put("Cuba","Cuba");
-        pais.put("México","México");
-        pais.put("Colombia","Colombia");
-        pais.put("España","España");
-        pais.put("Suecia","Suecia");
-        return pais;
+        String sql="SELECT * FROM paises";
+        List<Map<String,Object>> datos= this.jdbcTemplate.queryForList(sql);
+        LinkedHashMap<String,String>paises= new LinkedHashMap<>();
+        for(int i=0;i<datos.size();i++){
+            paises.put(""+datos.get(i).get("idPais"),""+datos.get(i).get("nombrePais"));
+        } 
+        return paises;
     }
     
     @ModelAttribute("prueba")
@@ -139,7 +161,13 @@ public class EditController
     return esaPersona;
     }
     
-    
+    public String nombrePaisPorId(int a){
+        //Para agregar el nombre del pais tengo que encontrar 1ro el pais en la tabla de paises
+        String sqlPais = "SELECT * FROM paises WHERE idPais='" +a+"'";
+        List<Map<String,Object>> datos= this.jdbcTemplate.queryForList(sqlPais);
+        String paise= ""+(datos.get(0).get("nombrePais"));
+        return paise;
+    }
     
 
 }

@@ -16,7 +16,7 @@
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="<c:url value="home.htm"/>">Home</a></li>
-                    <li class="breadcrumb-item active" aria-current="<c:url value="add.htm"/>">Add</li>
+                    <li class="breadcrumb-item active" aria-current="<c:url value="add.htm"/>">Edit</li>
                 </ol>
             </nav>
             <legend>Edit user</legend>
@@ -69,6 +69,7 @@
                         <label class="col-md-4 control-label" for="pais">Select country</label>
                         <div class="col-md-4">
                             <f:select id="pais" path="pais"  name="pais" class="form-control">
+                                <option value="ninguno">Select......</option>
                                 <f:options items="${paisLista}"/>
                             </f:select>
                         </div>
@@ -79,7 +80,14 @@
                     <div class="form-group">
                         <label class="col-md-4 control-label" for="enviar"></label>
                         <div class="col-md-4">
-                            <button id="enviar" type="input" name="enviar" class="btn btn-primary">Save changes</button>              
+                            
+                            <!-- el "type" es el que manda la accion para que recopile todos los datos en "persona" que es el commandName que le pusimos al formulario arriba -->
+                            <!--En el dispatcher-servle.xml es donde unimos la vista editar con el controlador -->
+                            <!--ES DECIR TODO LO QUE SE HAGA AQUI VA A ESTAR CONECTADO CON EL EDITCONTROLLER
+                            
+                            EL BOTON SABE AUTOMATICAMENTE QUE CUANDO SE APRIETE VA A RECOPILAR LOD DATOS Y LO VA A MANDAR A 
+                            LA CLASE EditController.java mediante el comando "persona"-->
+                            <button id="enviar" type="submit" name="enviar" class="btn btn-primary">Save changes</button>              
                         </div>
                 </fieldset>
             </f:form>           

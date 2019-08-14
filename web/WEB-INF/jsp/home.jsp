@@ -9,7 +9,11 @@
     </head>
     <body>
         <div class="container">
-            <br>
+             <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="<c:url value="home.htm"/>">Home</a></li>
+                </ol>
+            </nav>
             <h1>User List</h1>
             <br>
             <table class="table table-bordered">
@@ -42,7 +46,7 @@
             </table>
             <div>
                 <p>
-                    <a href="<c:url value="add.htm"/>" class="btn btn-success"><img src="<c:url value="public/images/icons8-plus-math-filled-24.png"/>"/>Add</a>
+                    <a href="<c:url value="add.htm"/>"><img src="<c:url value="public/images/icons8_add_user_male_40px.png"/>"/></a>
                 </p>
             </div>
         </div>

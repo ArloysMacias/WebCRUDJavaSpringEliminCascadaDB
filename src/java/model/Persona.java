@@ -12,7 +12,7 @@ public class Persona {
     private int id;
     private String nombre;
     private String correo;
-    private String pais;
+    private String pais="";
     private int edad;
     private LocalDate Localfecha;
     private DateUtils dateUtils;

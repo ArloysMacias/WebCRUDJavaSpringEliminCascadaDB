@@ -1,0 +1,9 @@
+.scrollCaracterist {
+position: relative;
+height: 400px;
+overflow: auto;
+}
+.scrollArloys {
+display: block;
+}
+

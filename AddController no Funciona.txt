@@ -32,7 +32,6 @@ public class AddController {
     
     private PersonaValidation personaValidacion;
     private JdbcTemplate jdbcTemplate;
-    private List tablaPaises;
     
     public AddController() {
         this.personaValidacion=new PersonaValidation();
@@ -41,30 +40,30 @@ public class AddController {
     }
     
     //Para coger y poner los datos
-    //Del objeto que aÃ±ado como persona ( mav.addObject("persona"....) voy a coger sus parametros en el path del formulario
+    //Del objeto que añado como persona ( mav.addObject("persona"....) voy a coger sus parametros en el path del formulario
     //ejemplo path="nombre"  se tiene que llamar igual que el atributo de la clase Persona .. per.nombre
     //que se le paso al modelo en ...mav.addObject("persona", per);
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView form(){
-        ModelAndView mav=crearModeloConNombre("add");
-        return mav;
-    }
-    
-    public ModelAndView crearModeloConNombre(String nombreVista){  
+        Persona per=new Persona();
+        Pais pais=new Pais();
+        per.setFecha(per.getFechalocal());
         ModelAndView mav=new ModelAndView();
-        Persona per=new Persona();//Solo se utiliza para la fecha de hoy, lo demas esta vacio
-        per.setFecha(per.getFechalocal());//Para que salga la fecha de hoy  
-        mav.setViewName(nombreVista); //Nombre de la vista
-        mav.addObject("persona", per);//Esta persona esta vacia pero es la que se utiliza para mostrar la fecha actual es decir no muestra los datos pero si la fecha de hoy
-        mav.addObject("listaPaises",listadoDePaises());//Este es el que sale en el desplegable "Select......"     LinkedHashMap   para el select
-        return mav;
-    }
-    
-    public ModelAndView crearModeloConNombreYPersona(String nombreVista, Persona p){  
-        ModelAndView mav=new ModelAndView();
-        mav.setViewName(nombreVista); //Nombre de la vista
-        mav.addObject("persona", p);//Esta persona esta vacia pero es la que se utiliza para mostrar la fecha actual es decir no muestra los datos pero si la fecha de hoy
-        mav.addObject("listaPaises",listadoDePaises());//Este es el que sale en el desplegable "Select......"                 LinkedHashMap   para el select
+        
+        //Esto es para que salgan los paises que estan en la base de datos en el select
+        String sql="SELECT * FROM paises";
+        List tablaPaises=this.jdbcTemplate.queryForList(sql);
+        List<Map<String,Object>> datos= this.jdbcTemplate.queryForList(sql);
+        LinkedHashMap<String,String>paises= new LinkedHashMap<>();
+        for(int i=0;i<datos.size();i++){
+            paises.put(""+datos.get(i).get("idPais"),""+datos.get(i).get("nombrePais"));
+        }
+        
+        mav.setViewName("add");
+        mav.addObject("persona", per);
+        mav.addObject("nombrePais", pais);
+        mav.addObject("listaPaises",paises);//Este es el que sale en el desplegable "Select......"
+        mav.addObject("tablaPaises",tablaPaises); //Este es el que sale en la tabla del modal
         return mav;
     }
     
@@ -81,13 +80,14 @@ public class AddController {
     //actualizo la tabla
     
     //Para coger y poner los datos
-    //Del objeto que aÃ±ado como persona ( mav.addObject("persona"....) voy a coger sus parametros en el path del formulario
+    //Del objeto que añado como persona ( mav.addObject("persona"....) voy a coger sus parametros en el path del formulario
     //ejemplo path="nombre"  se tiene que llamar igual que el atributo de la clase Persona .. per.nombre
     //que se le paso al modelo en ...mav.addObject("persona", per);
     @RequestMapping(method = RequestMethod.POST)
     public ModelAndView form
         (
-                @ModelAttribute("persona")Persona p, //"persona" ==commandName en add.jsp
+                @ModelAttribute("persona")Persona p,
+                @ModelAttribute("pais")Pais pais,
                 BindingResult result,
                 SessionStatus status
         )
@@ -95,37 +95,30 @@ public class AddController {
         
         this.personaValidacion.validate(p, result);
         if(result.hasErrors()){
-            ModelAndView mav = crearModeloConNombreYPersona("add",p);
+            ModelAndView mav = new ModelAndView();
+            
+            //Esto es para que salgan los paises que estan en la base de datos en el select
+            String sql = "SELECT * FROM paises";
+            List<Map<String, Object>> datos = this.jdbcTemplate.queryForList(sql);
+            LinkedHashMap<String, String> paises = new LinkedHashMap<>();
+            for (int i = 0; i < datos.size(); i++) {
+                paises.put("" + datos.get(i).get("idPais"), "" + datos.get(i).get("nombrePais"));
+            }
+            mav.setViewName("add");
+            mav.addObject("persona", new Persona());
+            mav.addObject("nombrePais", new Pais());
+            mav.addObject("listaPaises",paises);//Este es el que sale en el desplegable "Select......"
             return mav;
         }else{
             String sql="insert into usuarios (nombre,email,edad,fechaNac,pais)values(?,?,?,?,?)";
             this.jdbcTemplate.update(sql, p.getNombre(),p.getCorreo(),p.getEdad(),p.getFecha(),nombrePaisPorId(Integer.parseInt(p.getPais())));
+            
+            String sql2="insert into paises (nombrePais)values(?)";
+            this.jdbcTemplate.update(sql2, pais.getNombrePais());
+            
             return new ModelAndView("redirect:/home.htm");
         }
     }
-        
- 
-//    @RequestMapping(value = "/paisSS", method = RequestMethod.POST)
-//    public ModelAndView formPais
-//        (
-//                @ModelAttribute("pais")Pais pais,
-//                BindingResult result,
-//                SessionStatus status
-//        )
-//    {  
-////        this.personaValidacion.validatePais(pais, result);
-////        if(result.hasErrors()){
-////            ModelAndView mav=obtenerDatos("addPais");
-////            return mav;
-////        }else{
-//            String sql="insert into paises (nombrePais,idPais)values(?,?)";
-//            this.jdbcTemplate.update(sql, pais.getNombrePais(),pais.getId());
-////            String sql2="insert into paises (nombrePais)values(?)";
-////            this.jdbcTemplate.update(sql2, pais.getNombrePais());     
-//            return new ModelAndView("redirect:/add.htm");
-////        }
-//    }
-     
     public String nombrePaisPorId(int a){
         //Para agregar el nombre del pais tengo que encontrar 1ro el pais en la tabla de paises
         String sqlPais = "SELECT * FROM paises WHERE idPais='" +a+"'";
@@ -138,7 +131,6 @@ public class AddController {
     //pais.put(Valor que coje en la base Datos, Valor que muestra la pagina)
     public Map<String,String>listadoDePaises(){
         String sql="SELECT * FROM paises";
-        this.tablaPaises=this.jdbcTemplate.queryForList(sql);
         List<Map<String,Object>> datos= this.jdbcTemplate.queryForList(sql);
         LinkedHashMap<String,String>paises= new LinkedHashMap<>();
         for(int i=0;i<datos.size();i++){
@@ -146,6 +138,18 @@ public class AddController {
         } 
         return paises;
     }
-    
+        
+//    //metodo para poblar el select
+//    @ModelAttribute("paisListaPaises")
+//    //pais.put(Valor que coje en la base Datos, Valor que muestra la pagina)
+//    public Map<String,String>listadoDePaises(){
+//        Map<String,String>pais= new LinkedHashMap<>();
+//        pais.put("Cuba","Cuba");
+//        pais.put("México","México");
+//        pais.put("Colombia","Colombia");
+//        pais.put("España","España");
+//        pais.put("Suecia","Suecia");
+//        return pais;
+//    }
     
 }

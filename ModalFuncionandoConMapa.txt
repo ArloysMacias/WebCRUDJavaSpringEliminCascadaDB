@@ -1,0 +1,65 @@
+<!-- Modal -->
+            <!--f:form method="POST" action="add.htm" class="form-horizontal" modelAttribute="paisSS">-->
+            <f:form class="form-horizontal" commandName="paisSS"> 
+                <div class="modal fade" id="exampleModalScrollable" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableTitle" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-scrollable" role="document">
+                        <div class="modal-content">
+                            <div class="container-fluid">  
+                                <!--Modal Header-->
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                    <h4 class="modal-title" id="exampleModalLabel">Add another country</h4>
+                                </div>
+                                <!--Modal Body-->
+                                <div class="modal-body"> 
+                                    <!--Nombre-->
+                                    <div class="form-group">
+                                        <label> Name</label>
+                                        <f:input id="textinput" path="nombrePais" name="textinput" type="text" placeholder="Pais" class="form-control input-md" required="" />
+                                    </div>
+
+                                    <!--texto debajo del nombre-->
+                                    <small class="form-text text-muted">Make sure the country does not exist in the list</small>
+
+                                    <!--Separar la tabla y el mapa-->
+                                    <div class="row">
+                                        <div class="col-md-4 ml-auto">
+                                            <!--Tabla-->
+                                            <div class="scrollArloys scrollCaracterist">
+                                                <table class="table">   
+                                                    <thead class="thead-dark">
+                                                        <tr>
+                                                            <th scope="col">Id</th>
+                                                            <th scope="col">Name</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <c:forEach items="${tablaPaises}" var="TablaPaises">
+                                                            <tr>
+                                                                <td><c:out value="${TablaPaises.idPais}"/></td>
+                                                                <td><c:out value="${TablaPaises.nombrePais}"/></td>
+                                                            </tr>
+                                                        </c:forEach>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                        <!--Mapa-->
+                                        <div class="col-md-8 ml-auto">
+                                            <iframe src="https://www.google.com/maps/embed?pb=" width="364" height="400" frameborder="0" style="border:0" allowfullscreen></iframe>
+                                        </div>
+                                    </div>
+                                </div>          
+                                <!--Footer-->
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    <button id="enviar" type="submit" name="enviar" class="btn btn-primary">Add</button>
+                                    <!--<imput type="submit" class="btn btn-primary" >Add</imput>-->
+                                </div> 
+                            </div>
+                        </div> 
+                    </div>
+                </div>
+            </f:form>

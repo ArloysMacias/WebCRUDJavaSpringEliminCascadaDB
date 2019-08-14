@@ -24,7 +24,8 @@
                 <prop key="add.htm">addController</prop> 
                 <prop key="delete.htm">deleteController</prop>
                 <prop key="edit.htm">editController</prop>
-                <prop key="addPais.htm">AddPaisController</prop>       
+                <prop key="addPais.htm">AddPaisController</prop>  
+                <prop key="deletePais.htm">DeletePais</prop>       
             </props>
         </property>
     </bean>
@@ -39,6 +40,7 @@
     separar el class y la p:view
       el name lo coje de lo que pongas en el prop
     -->
+    <bean name="DeletePais" class="controller.DeletePais"/>
     <bean name="AddPaisController" class="controller.AddPaisController"/>
     <bean name="editController" class="controller.EditController"/>
     <bean name="deleteController" class="controller.DeleteController"/>
